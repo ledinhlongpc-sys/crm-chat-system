@@ -1,0 +1,167 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createServerSupabaseClient } from "@/lib/supabaseServer";
+import { getTenantId } from "@/lib/getTenantId";
+
+export async function PUT(req: NextRequest) {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    /* ================= AUTH ================= */
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Chưa đăng nhập" },
+        { status: 401 }
+      );
+    }
+
+    /* ================= TENANT ================= */
+
+    const tenant_id = await getTenantId(supabase);
+
+    if (!tenant_id) {
+      return NextResponse.json(
+        { error: "TENANT_NOT_FOUND" },
+        { status: 400 }
+      );
+    }
+
+    /* ================= ROLE ================= */
+
+    const { data: userInfo } = await supabase
+      .from("system_user")
+      .select("user_type")
+      .eq("system_user_id", user.id)
+      .eq("tenant_id", tenant_id)
+      .single();
+
+    if (!["tenant", "admin", "manager"].includes(userInfo?.user_type)) {
+      return NextResponse.json(
+        { error: "Không có quyền sửa tạm ứng" },
+        { status: 403 }
+      );
+    }
+
+    /* ================= BODY ================= */
+
+    const body = await req.json();
+
+    let {
+      id,
+      staff_id,
+      amount,
+      reason,
+      note,
+      advance_date,
+    } = body;
+
+    /* ================= VALIDATE ================= */
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Thiếu id" },
+        { status: 400 }
+      );
+    }
+
+    if (!staff_id) {
+      return NextResponse.json(
+        { error: "Thiếu nhân viên" },
+        { status: 400 }
+      );
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      return NextResponse.json(
+        { error: "Số tiền không hợp lệ" },
+        { status: 400 }
+      );
+    }
+
+    if (!advance_date) {
+      return NextResponse.json(
+        { error: "Thiếu ngày tạm ứng" },
+        { status: 400 }
+      );
+    }
+
+    /* ================= CHECK RECORD ================= */
+
+    const { data: existing } = await supabase
+      .from("system_salary_advances")
+      .select("id")
+      .eq("id", id)
+      .eq("tenant_id", tenant_id)
+      .single();
+
+    if (!existing) {
+      return NextResponse.json(
+        { error: "Tạm ứng không tồn tại" },
+        { status: 404 }
+      );
+    }
+
+    /* ================= CHECK STAFF ================= */
+
+    const { data: staff } = await supabase
+      .from("system_salary_staffs")
+      .select("id")
+      .eq("id", staff_id)
+      .eq("tenant_id", tenant_id)
+      .single();
+
+    if (!staff) {
+      return NextResponse.json(
+        { error: "Nhân viên không tồn tại" },
+        { status: 400 }
+      );
+    }
+
+    /* ================= AUTO MONTH/YEAR ================= */
+
+    const date = new Date(advance_date);
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    /* ================= UPDATE ================= */
+
+    const { data, error } = await supabase
+      .from("system_salary_advances")
+      .update({
+        staff_id,
+        amount: Number(amount),
+        reason: reason || null,
+        note: note || null,
+        advance_date,
+        month,
+        year,
+      })
+      .eq("id", id)
+      .eq("tenant_id", tenant_id)
+      .select()
+      .single();
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data,
+    });
+
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message || "Server error" },
+      { status: 500 }
+    );
+  }
+}

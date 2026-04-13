@@ -1,0 +1,174 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* =========================
+   RESET CƠ BẢN
+========================= */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================
+   BASE – SAPO STYLE CRM
+========================= */
+@layer base {
+  html {
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;            /* 🔥 SAPO: 16px */
+    line-height: 1.6;           /* 🔥 SAPO: rất quan trọng */
+    color: rgb(23 23 23);
+    background-color: #f5f6f8;  /* nền xám rất nhẹ như Sapo */
+  }
+
+  body {
+    font-family: inherit;
+    line-height: 1.6;
+    background-color: transparent;
+  }
+
+  body.dark {
+    background-color: rgb(10 10 10);
+    color: rgb(245 245 245);
+  }
+
+  /* =========================
+     TEXT SCALE – SAPO
+  ========================= */
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  label {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* =========================
+     FORM 
+  ========================= */
+  input,
+  select,
+  textarea,
+  button {
+    font-family: inherit;
+    font-size: 16px;        /* 🔥 không dùng 14 */
+    line-height: 1.6;
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: white;
+  }
+
+  /* =========================
+     TABLE 
+  ========================= */
+  table {
+  font-size: 16px;        /* 🔥 tăng từ 15 → 16 */
+  line-height: 1.6;      /* 🔥 table nên thấp hơn text thường */
+  background-color: white;
+}
+
+th {
+  font-size: 16px;        /* header nhỏ hơn body 1 chút */
+  font-weight: 600;
+  color: rgb(55 65 81);   /* neutral-700 */
+}
+
+td {
+  font-size: 16px;        /* 🔥 body table rõ – đầm */
+  color: rgb(31 41 55);   /* neutral-800 */
+};
+}
+/* =========================
+   QUILL IMAGE RESIZE FIX
+========================= */
+
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+.ql-resize-box {
+  border: 1px dashed #3b82f6 !important;
+}
+
+.ql-resize-handle {
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+}
+
+/* =========================
+   QUILL IMAGE RESIZE (MANUAL)
+========================= */
+
+.ql-resize-box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px dashed #3b82f6;
+  z-index: 20;
+}
+
+.ql-resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+  z-index: 21;
+}
+
+.ql-resize-handle.nw {
+  top: -6px;
+  left: -6px;
+  cursor: nwse-resize;
+}
+
+.ql-resize-handle.ne {
+  top: -6px;
+  right: -6px;
+  cursor: nesw-resize;
+}
+
+.ql-resize-handle.sw {
+  bottom: -6px;
+  left: -6px;
+  cursor: nesw-resize;
+}
+
+.ql-resize-handle.se {
+  bottom: -6px;
+  right: -6px;
+  cursor: nwse-resize;
+}

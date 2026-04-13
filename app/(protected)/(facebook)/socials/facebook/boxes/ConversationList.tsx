@@ -10,6 +10,7 @@ const PAGE_SIZE = 20;
 export default function ConversationList({
   initialData,
   tenantId,
+  currentUserId,
 }: any) {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -115,6 +116,20 @@ export default function ConversationList({
     >
       {data.map((conv: any) => {
         const isActive = activeId === conv.conversation_id;
+        const isUnread = conv.is_read === false;
+        const isAssignedToCurrentUser =
+          conv.assigned_to === currentUserId;
+        const isUnassigned = conv.assigned_to == null;
+        const assignmentLabel = isAssignedToCurrentUser
+          ? "Đang xử lý"
+          : isUnassigned
+            ? "Chưa có người xử lý"
+            : "Đã có người xử lý";
+        const assignmentColorClass = isAssignedToCurrentUser
+          ? "text-blue-600"
+          : isUnassigned
+            ? "text-gray-400"
+            : "text-orange-500";
 
         return (
           <div
@@ -136,8 +151,21 @@ export default function ConversationList({
 
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center">
-                <div className="font-medium text-sm truncate">
-                  {conv.customer_name || "Facebook User"}
+                <div className="flex items-center gap-2 min-w-0">
+                  <div
+                    className={`text-sm truncate ${
+                      isUnread
+                        ? "font-semibold text-neutral-900"
+                        : "font-normal text-neutral-700"
+                    }`}
+                  >
+                    {conv.customer_name || "Facebook User"}
+                  </div>
+                  <span
+                    className={`text-xs whitespace-nowrap ${assignmentColorClass}`}
+                  >
+                    {assignmentLabel}
+                  </span>
                 </div>
 
                 <div className="text-xs text-gray-400 whitespace-nowrap">
@@ -145,7 +173,13 @@ export default function ConversationList({
                 </div>
               </div>
 
-              <div className="text-xs text-gray-500 truncate mt-1">
+              <div
+                className={`text-xs truncate mt-1 ${
+                  isUnread
+                    ? "font-semibold text-neutral-900"
+                    : "font-normal text-neutral-700"
+                }`}
+              >
                 {conv.last_message_text || "Chưa có tin nhắn"}
               </div>
             </div>

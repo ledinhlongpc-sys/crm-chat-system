@@ -1,0 +1,41 @@
+{
+  "name": "website_tmp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "./node_modules/.bin/next dev -p 1268",
+    "build": "./node_modules/.bin/next build",
+    "start": "./node_modules/.bin/next start -p 1268",
+    "lint": "./node_modules/.bin/next lint"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1014.0",
+    "@supabase/auth-helpers-nextjs": "^0.15.0",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.89.0",
+    "@tiptap/react": "^3.15.3",
+    "@tiptap/starter-kit": "^3.15.3",
+    "browser-image-compression": "^2.0.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
+    "next": "15.5.9",
+    "quill": "^1.3.7",
+    "quill-image-resize-module": "^3.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-hot-toast": "^2.6.0",
+    "recharts": "^3.8.1",
+    "swr": "^2.4.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "5.9.3"
+  }
+}
